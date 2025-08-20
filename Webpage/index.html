@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robin OS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Base styles and CSS reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2d5bff;
+            --secondary: #ff6b35;
+            --dark: #1a2238;
+            --light: #f4f7ff;
+            --gray: #6b7280;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header and Navigation */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.24rem; /* Reduced from 1.8rem */
+            color: var(--primary);
+        }
+
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .active {
+            color: var(--primary) !important;
+        }
+        
+        .active::after {
+            width: 100% !important;
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            top: 70px;
+            right: 5%;
+            width: 50%;
+            background-color: white;
+            /* padding: 20px; */
+            box-shadow: 12px 12px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 999;
+            border-radius: 30px;
+        }
+        
+        .mobile-nav.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+            line-height: 1;
+            min-width: 250px;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .mobile-nav-links {
+            list-style: none;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .mobile-nav-links > a{
+            font-size: 1rem;
+        }
+
+        /* .mobile-nav-links li {
+            margin: 10px 0;
+        } */
+        
+        .mobile-nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            display: block;
+            padding: 10px;
+            transition: all 0.3s;
+        }
+        
+        .mobile-nav-links a:hover {
+            color: var(--primary);
+            background-color: var(--light);
+            border-radius: 8px;
+        }
+        
+        /* Page content */
+        .page {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+            padding-top: 100px;
+            min-height: calc(100vh - 200px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Home Page */
+        #home {
+            display: block;
+        }
+        
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 0;
+        }
+        
+        .hero-content {
+            flex: 1;
+            padding-right: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem; /* Reduced from 3.5rem */
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: fadeIn 1s ease;
+        }
+        
+        .hero p {
+            font-size: 1.1rem; /* Reduced from 1.2rem */
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .btn {
+            padding: 12px 25px; /* Slightly reduced */
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px rgba(45, 91, 255, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(45, 91, 255, 0.6);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .hero-image {
+            margin-right: 20px;
+            margin-left: 20px;
+            margin-top: 50px;
+            flex: 1;
+            text-align: center;
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 30px; /* Reduced from 100px */
+            background-color: white;
+            border-radius: 20px;
+            margin: 40px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 1.75rem; /* Reduced from 2.5rem */
+            margin-bottom: 50px; /* Reduced from 60px */
+            color: var(--dark);
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px; /* Reduced from 40px */
+        }
+        
+        .feature-card {
+            background-color: var(--light);
+            border-radius: 15px;
+            padding: 25px; /* Reduced from 30px */
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+            animation-delay: calc(var(--delay) * 0.2s);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem; /* Reduced from 3rem */
+            margin-bottom: 15px; /* Reduced from 20px */
+            color: var(--primary);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.3rem; /* Reduced from 1.5rem */
+            margin-bottom: 12px; /* Reduced from 15px */
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 0.95rem; /* Slightly reduced */
+        }
+        
+  
+        /* Documentation Page */
+        .doc-container {
+            display: flex;
+            gap: 30px; /* Reduced from 40px */
+            margin: 30px 0; /* Reduced from 40px */
+        }
+        
+        .doc-sidebar {
+            flex: 1;
+            background: white;
+            padding: 25px; /* Reduced from 30px */
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            align-self: flex-start;
+        }
+        
+        .doc-content {
+            flex: 3;
+            background: white;
+            padding: 30px; /* Reduced from 40px */
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .doc-sidebar h3 {
+            margin-bottom: 15px; /* Reduced from 20px */
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light);
+            font-size: 1.2rem; /* Added */
+        }
+        
+        .doc-sidebar ul {
+            list-style: none;
+        }
+        
+        .doc-sidebar li {
+            margin-bottom: 8px; /* Reduced from 10px */
+        }
+        
+        .doc-sidebar a {
+            text-decoration: none;
+            color: var(--dark);
+            transition: color 0.3s;
+            display: block;
+            padding: 6px 0; /* Reduced from 8px */
+            font-size: 0.95rem; /* Added */
+        }
+        
+        .doc-sidebar a:hover {
+            color: var(--primary);
+        }
+        
+        .doc-content h2 {
+            margin: 20px 0 12px; /* Reduced from 25px 0 15px */
+            color: var(--primary);
+            font-size: 1.5rem; /* Added */
+        }
+        
+        .doc-content p {
+            margin-bottom: 15px; /* Reduced from 20px */
+            line-height: 1.7; /* Slightly reduced */
+            font-size: 0.95rem; /* Added */
+        }
+        
+        .doc-content code {
+            background-color: var(--light);
+            padding: 15px; /* Reduced from 20px */
+            border-radius: 8px;
+            display: block;
+            margin: 15px 0; /* Reduced from 20px */
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            font-size: 0.9rem; /* Added */
+        }
+
+
+        /* About Page */
+        .about-content {
+            background: white;
+            padding: 30px; /* Reduced from 40px */
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin: 30px 0; /* Reduced from 40px */
+        }
+        
+        .about-content h2 {
+            margin: 20px 0 12px; /* Reduced from 25px 0 15px */
+            color: var(--primary);
+            font-size: 1.4rem; /* Added */
+        }
+        
+        .about-content h4 {
+            margin: 15px 0 10px;
+            color: var(--secondary);
+            font-size: 1.2rem; /* Added */
+        }
+        
+        .about-content p {
+            margin-bottom: 15px; /* Reduced from 20px */
+            line-height: 1.7; /* Slightly reduced */
+            font-size: 0.95rem; /* Added */
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding-bottom: 10px;
+        }
+    
+        
+        .copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .hero-content {
+                padding-right: 0;
+                margin-bottom: 40px;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .doc-container {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem; /* Reduced from 2.5rem */
+            }
+            
+            .section-title {
+                font-size: 1.5rem; /* Added for mobile */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem; /* Further reduced for very small screens */
+            }
+            
+            .section-title {
+                font-size: 1.5rem; /* Further reduced for very small screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span>Robin OS</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="active" data-page="home">Home</a></li>
+                    <li><a href="#" data-page="documentation">Documentation</a></li>
+                    <li><a href="#" data-page="about">About</a></li>
+                </ul>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <ul class="mobile-nav-links">
+            <li><a href="#" class="active" data-page="home">Home</a></li>
+            <li><a href="#" data-page="documentation">Documentation</a></li>
+            <li><a href="#" data-page="about">About</a></li>
+        </ul>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home" class="page">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Robin OS</h1>
+                    <p>A handcrafted Linux experience built from the ground. It's lightweight, fast, and tailored for those who believe operating systems should serve you, not the other way around.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary">Download</a>
+                        <a href="#" class="btn btn-secondary">Contribute</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://raw.githubusercontent.com/akritbehera27/hyprdots/refs/heads/main/resources/screenshot.png" alt="Robin OS Interface">
+                </div>
+            </div>
+
+            <div class="features">
+                <h2 class="section-title">Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card" style="--delay: 1">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3>Lightning Fast</h3>
+                        <p>Optimized for speed with boot times under 45 secounds and responsive performance even on older hardware.</p>
+                    </div>
+                    <div class="feature-card" style="--delay: 2">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure</h3>
+                        <p>Based On Arch linux, which is an tough nut to crack</p>
+                    </div>
+                    <div class="feature-card" style="--delay: 3">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Fully Customizable</h3>
+                        <p>Tailor your experience with code, extensions, and custom components that suit your workflow.</p>
+                    </div>
+                    
+                    <div class="feature-card" style="--delay: 4">
+                        <div class="feature-icon">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <h3>Open Source</h3>
+                        <p>Completely open source with an active community contributing to its development.</p>
+                    </div>
+                    <div class="feature-card" style="--delay: 5">
+                        <div class="feature-icon">
+                            <i class="fa-brands fa-linux"></i>
+                        </div>
+                        <h3>Arch Based</h3>
+                        <p>Robin OS, Being based on arch gives you an edge with all the arch features and repos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Documentation Page -->
+    <div id="documentation" class="page">
+        <div class="container">
+            <h2 class="section-title">Documentation</h2>
+            <div class="doc-container">
+                <div class="doc-sidebar">
+                    <h3>Contents</h3>
+
+                    <!-- HOW TO LINK -->
+
+                    <!-- Create a heading with an ID -->
+                    <!-- <h2 id="section1">Section 1: Introduction</h2>
+                    <p>This is the content of section 1...</p> -->
+                    
+                    <!-- Link to that heading from elsewhere -->
+                    <!-- <a href="#section1">Jump to Introduction</a> -->
+
+
+                    <ul>
+                        <li><a href="#section9">Installation Guide</a></li>
+                        <li><a href="#">Getting Started</a></li>
+                        <li><a href="#">System Requirements</a></li>
+                        <li><a href="#">Troubleshooting</a></li>
+                        <li><a href="#">Advanced Configuration</a></li>
+                        <li><a href="#">Developer Guide</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#section1">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="doc-content">
+                    <h2 id="section1">Getting Started with Robin OS</h2>
+                    <p>Welcome to Robin OS! This guide will help you get started with your new operating system.</p>
+                    
+                    <h2>System Requirements</h2>
+                    <p>Before installing Robin OS, ensure your system meets these requirements:</p>
+                    <ul>
+                        <li>64-bit processor</li>
+                        <li>4GB RAM (8GB recommended)</li>
+                        <li>20GB of available storage</li>
+                        <li>Graphics card supporting OpenGL 3.3 or higher</li>
+                    </ul>
+                    
+                    <h2>Installation</h2>
+                    <p>To install Robin OS, follow these steps:</p>
+                    <code>
+                        # Download the latest ISO<br>
+                        wget https://link.com <br><br>
+                        
+                        # Create a bootable USB<br>
+                        dd if=robin-os-latest.iso of=/dev/sdX bs=4M status=progress<br><br>
+                        
+                        # Boot from USB and follow installation wizard
+                    </code>
+                    
+                    <h2 id="section9">First Boot</h2>
+                    <p>After installation, you'll be guided through the initial setup process where you can create your user account, connect to Wi-Fi, and customize your preferences.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- About Page -->
+    <div id="about" class="page">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="about-content">
+                <h2>Ideology</h2>
+                <p>Robin isn't just another Linux distribution it's a personal OS for your ideas. Built on the rock-solid foundation of Arch Linux, Robin embraces a minimalistic philosophy: no bloat, no distractions, just the essential tools you need to create your own perfect system. In the spirit of true do-it-yourself computing, Robin gives you full control over every layer of your environment. From the bootloader to the desktop, nothing is preordained you choose what's installed, how it looks, and how it behaves. Every component is hand-picked, every configuration file tells a part of your story. Though basic configs are provided for feasibility.</p>
+                
+                <p>Robin is based on Arch, it inherits the latest software, the legendary Arch Wiki, and the rolling release model that keeps your system cutting-edge. But unlike a preconfigured distro, Robin doesn't hand you a finished product.</p>
+            
+                
+                <h2 style="margin-top: 65px;">Developer</h2>
+                <b>Hi, I am Akrit Behera, Developer of this OS</b>
+
+                <p>I created Robin because I believe computing is a beautiful craft, not a headache. I've always been drawn to minimalism and the satisfaction of building something with my own hands.</p>
+
+                <p>I wanted an operating system that reflected that philosophy. Robin is my attempt to strip away the unnecessary and leave only the freedom to create. I keep it lightweight, transparent, and flexible, so you can shape your system exactly the way you want it. For me, it's not just about using Linux — it's about diving into the world of OS tech.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                &copy; 2025 Akrit Behera. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Page navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const pageLinks = document.querySelectorAll('.nav-links a, .mobile-nav-links a');
+            const pages = document.querySelectorAll('.page');
+            const hamburger = document.querySelector('.hamburger');
+            const mobileNav = document.querySelector('.mobile-nav');
+            
+            // Hamburger menu functionality
+            hamburger.addEventListener('click', function(e) {
+                e.stopPropagation();
+                mobileNav.classList.toggle('active');
+                hamburger.innerHTML = mobileNav.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Page navigation
+            pageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    // Hide all pages
+                    pages.forEach(page => {
+                        page.style.display = 'none';
+                    });
+                    
+                    // Show target page
+                    document.getElementById(targetPage).style.display = 'block';
+                    
+                    // Update active link
+                    pageLinks.forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close mobile nav if open
+                    if (mobileNav.classList.contains('active')) {
+                        mobileNav.classList.remove('active');
+                        hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                });
+            });
+            
+            // Animate feature cards on scroll
+            const featureCards = document.querySelectorAll('.feature-card');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            featureCards.forEach(card => {
+                card.style.animationPlayState = 'paused';
+                observer.observe(card);
+            });
+            
+            // Close mobile nav when clicking outside
+            document.addEventListener('click', function(e) {
+                if (mobileNav.classList.contains('active') && 
+                    !e.target.closest('.mobile-nav') && 
+                    !e.target.closest('.hamburger')) {
+                    mobileNav.classList.remove('active');
+                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
